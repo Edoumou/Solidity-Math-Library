@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  margin-top: 30px;
 }
 
 .App-logo {
@@ -19,4 +20,8 @@
 
 .App-link {
   color: #09d3ac;
+}
+
+.segment {
+  padding-top: 50px;
 }

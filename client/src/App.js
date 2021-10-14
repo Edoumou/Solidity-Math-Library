@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import 'semantic-ui-css/semantic.min.css';
+import { Input, Icon, Button } from 'semantic-ui-react';
 import MathLibrary from "./contracts/MathLibrary.json";
 import getWeb3 from "./getWeb3";
 
@@ -46,8 +47,8 @@ class App extends Component {
   runExample = async () => {
     const { contract, account } = this.state;
 
-    let num1 = '1242528.0745525';
-    let num2 = '26353340.1908831'; //-25110812.1163
+    let num1 = '3.14';
+    let num2 = '14.30'; //-25110812.1163
 
     //let wp;
     //let dp;
@@ -64,13 +65,33 @@ class App extends Component {
 
   };
 
+  calculate = async () => {
+    const { num1, num2, account, contract } = this.state;
+
+    let res = await contract.methods.subFloat(num1, num2).call({ account: account });
+
+    this.setState({ num: res[2] });
+  }
+
   render() {
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
     return (
       <div className="App">
-        <h1>Let's Go!</h1>
+        <h1>Calculator</h1>
+
+        <div className="segment">
+          <span> <Input placeholder='number 1' onChange={e => this.setState({ num1: e.target.value })} /> </span>
+          <span> <Icon name='minus' /> </span>
+          <span> <Input placeholder='number 2' onChange={e => this.setState({ num2: e.target.value })} /> </span>
+          <span style={{ paddingLeft: 10, paddingRight: 10 }}>
+            <Button color='teal' onClick={this.calculate}>
+              Calculate
+            </Button>
+          </span>
+          <span> <Input disabled placeholder='result' value={this.state.num} /> </span>
+        </div>
       </div>
     );
   }

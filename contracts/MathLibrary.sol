@@ -78,8 +78,7 @@ contract MathLibrary {
 
         (str1, str2) = normalizeNumbers(_str1, _str2);
 
-        (num1, isUint) = removeDot(str1);
-        (num2, isUint) = removeDot(str2);
+        (num1, num2) = removeDotAndNormalize(str1, str2);
 
         if (num1 == num2) {
             wp = 0;
@@ -177,14 +176,13 @@ contract MathLibrary {
         pure
         returns (string memory, string memory)
     {
-        bytes memory strBytes = bytes(_str);
-        uint256 n = strBytes.length;
+        uint256 n = bytes(_str).length;
 
         uint256 limit;
 
         for (uint256 i = 0; i < n; i++) {
             if (
-                keccak256(abi.encodePacked(strBytes[i])) ==
+                keccak256(abi.encodePacked(bytes(_str)[i])) ==
                 keccak256(abi.encodePacked(bytes(".")))
             ) {
                 limit = i;
@@ -196,11 +194,11 @@ contract MathLibrary {
 
         for (uint256 i = 0; i < n; i++) {
             if (i < limit) {
-                wholeNumberPart[i] = strBytes[i];
+                wholeNumberPart[i] = bytes(_str)[i];
             }
 
             if (i > limit) {
-                decimalPart[i - limit - 1] = strBytes[i];
+                decimalPart[i - limit - 1] = bytes(_str)[i];
             }
         }
 
@@ -213,10 +211,10 @@ contract MathLibrary {
         uint256 _startIndex,
         uint256 _endIndex
     ) private pure returns (string memory) {
-        bytes memory strBytes = bytes(_str);
         bytes memory result = new bytes(_endIndex - _startIndex);
+
         for (uint256 i = _startIndex; i < _endIndex; i++) {
-            result[i - _startIndex] = strBytes[i];
+            result[i - _startIndex] = bytes(_str)[i];
         }
 
         return string(result);
@@ -284,7 +282,7 @@ contract MathLibrary {
         return str;
     }
 
-    // Add 10 at the bigining of the decimal parts and add zero at the end to have same number of digits for the two Input
+    // Add 10 and 30 at the bigining of the decimal parts and add zero at the end to have same number of digits for the two Input
     function normalizeNumbers(string memory _str1, string memory _str2)
         public
         pure
@@ -297,7 +295,7 @@ contract MathLibrary {
 
         uint256 num1;
         uint256 num2;
-        bool isUint;
+        //bool isUint;
 
         (wpStr1, dpStr1) = splitstring(_str1);
         (wpStr2, dpStr2) = splitstring(_str2);
@@ -318,8 +316,7 @@ contract MathLibrary {
             );
         }
 
-        (num1, isUint) = removeDot(_str1);
-        (num2, isUint) = removeDot(_str2);
+        (num1, num2) = removeDotAndNormalize(_str1, _str2);
 
         if (num1 == num2) {
             dpStr1 = string(abi.encodePacked("10", dpStr1));
@@ -414,7 +411,7 @@ contract MathLibrary {
         }
     }
 
-    //=== Removing the dot "." id decimal. Ex: "12.45 => 1245"
+    //=== Removing the dot "." of a floating point number. Ex: "12.45 => 1245"
     function removeDot(string memory _str) public pure returns (uint256, bool) {
         string memory wp;
         string memory dp;
@@ -422,6 +419,45 @@ contract MathLibrary {
         (wp, dp) = splitstring(_str);
 
         return strToUint(string(abi.encodePacked(wp, dp)));
+    }
+
+    //=== Removing the dot "." of two floating point numbers and normalizing. Ex: "(3.14, 14.3) => (314, 1430)"
+    function removeDotAndNormalize(string memory _str1, string memory _str2)
+        public
+        pure
+        returns (uint256, uint256)
+    {
+        string memory wp1;
+        string memory dp1;
+        string memory wp2;
+        string memory dp2;
+        bool isUint;
+        uint256 num1;
+        uint256 num2;
+
+        (wp1, dp1) = splitstring(_str1);
+        (wp2, dp2) = splitstring(_str2);
+
+        if (lengthOfString(dp1) < lengthOfString(dp2)) {
+            dp1 = paddRight(
+                dp1,
+                "0",
+                lengthOfString(dp2) - lengthOfString(dp1)
+            );
+        }
+
+        if (lengthOfString(dp2) < lengthOfString(dp1)) {
+            dp2 = paddRight(
+                dp2,
+                "0",
+                lengthOfString(dp1) - lengthOfString(dp2)
+            );
+        }
+
+        (num1, isUint) = strToUint(string(abi.encodePacked(wp1, dp1)));
+        (num2, isUint) = strToUint(string(abi.encodePacked(wp2, dp2)));
+
+        return (num1, num2);
     }
 
     //=== Padding Right
