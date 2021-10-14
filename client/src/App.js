@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import 'semantic-ui-css/semantic.min.css';
 import MathLibrary from "./contracts/MathLibrary.json";
 import getWeb3 from "./getWeb3";
 
@@ -46,7 +47,7 @@ class App extends Component {
     const { contract, account } = this.state;
 
     let num1 = '1242528.0745525';
-    let num2 = '26353340.1908831';
+    let num2 = '26353340.1908831'; //-25110812.1163
 
     //let wp;
     //let dp;
