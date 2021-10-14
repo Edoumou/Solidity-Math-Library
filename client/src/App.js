@@ -10,7 +10,10 @@ class App extends Component {
   state = {
     num1: '0',
     num2: '0',
-    num: '0',
+    num3: '0',
+    num4: '0',
+    numPlus: '0',
+    numMinus: '0',
     web3: null,
     account: null,
     contract: null
@@ -65,12 +68,20 @@ class App extends Component {
 
   };
 
-  calculate = async () => {
+  add = async () => {
     const { num1, num2, account, contract } = this.state;
 
-    let res = await contract.methods.subFloat(num1, num2).call({ account: account });
+    let res = await contract.methods.addFloat(num1, num2).call({ account: account });
 
-    this.setState({ num: res[2] });
+    this.setState({ numPlus: res[2] });
+  }
+
+  sub = async () => {
+    const { num3, num4, account, contract } = this.state;
+
+    let res = await contract.methods.subFloat(num3, num4).call({ account: account });
+
+    this.setState({ numMinus: res[2] });
   }
 
   render() {
@@ -82,15 +93,29 @@ class App extends Component {
         <h1>Calculator</h1>
 
         <div className="segment">
-          <span> <Input placeholder='number 1' onChange={e => this.setState({ num1: e.target.value })} /> </span>
-          <span> <Icon name='minus' /> </span>
-          <span> <Input placeholder='number 2' onChange={e => this.setState({ num2: e.target.value })} /> </span>
-          <span style={{ paddingLeft: 10, paddingRight: 10 }}>
-            <Button color='teal' onClick={this.calculate}>
-              Calculate
-            </Button>
-          </span>
-          <span> <Input disabled placeholder='result' value={this.state.num} /> </span>
+          <div>
+            <span> <Input placeholder='number 1' onChange={e => this.setState({ num1: e.target.value })} /> </span>
+            <span style={{ paddingLeft: 10, paddingRight: 10 }}> <Icon name='plus' /> </span>
+            <span> <Input placeholder='number 2' onChange={e => this.setState({ num2: e.target.value })} /> </span>
+            <span style={{ paddingLeft: 10, paddingRight: 10 }}>
+              <Button color='teal' onClick={this.add}>
+                Calculate
+              </Button>
+            </span>
+            <span> <Input disabled placeholder='result' value={this.state.numPlus} /> </span>
+          </div>
+          <div style={{ paddingTop: 60 }}>
+            <span> <Input placeholder='number 1' onChange={e => this.setState({ num3: e.target.value })} /> </span>
+            <span style={{ paddingLeft: 10, paddingRight: 10 }}> <Icon name='minus' /> </span>
+            <span> <Input placeholder='number 2' onChange={e => this.setState({ num4: e.target.value })} /> </span>
+            <span style={{ paddingLeft: 10, paddingRight: 10 }}>
+              <Button color='teal' onClick={this.sub}>
+                Calculate
+              </Button>
+            </span>
+            <span> <Input disabled placeholder='result' value={this.state.numMinus} /> </span>
+          </div>
+
         </div>
       </div>
     );
