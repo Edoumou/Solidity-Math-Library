@@ -12,8 +12,11 @@ class App extends Component {
     num2: '0',
     num3: '0',
     num4: '0',
+    num5: '0',
+    num6: '0',
     numPlus: '0',
     numMinus: '0',
+    numMul: '0',
     web3: null,
     account: null,
     contract: null
@@ -84,6 +87,14 @@ class App extends Component {
     this.setState({ numMinus: res[2] });
   }
 
+  mul = async () => {
+    const { num5, num6, account, contract } = this.state;
+
+    let res = await contract.methods.mulFloat(num5, num6).call({ account: account });
+
+    this.setState({ numMul: res[2] });
+  }
+
   render() {
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
@@ -115,7 +126,17 @@ class App extends Component {
             </span>
             <span> <Input disabled placeholder='result' value={this.state.numMinus} /> </span>
           </div>
-
+          <div style={{ paddingTop: 60 }}>
+            <span> <Input placeholder='number 1' onChange={e => this.setState({ num5: e.target.value })} /> </span>
+            <span style={{ paddingLeft: 10, paddingRight: 10 }}> <Icon name='close' /> </span>
+            <span> <Input placeholder='number 2' onChange={e => this.setState({ num6: e.target.value })} /> </span>
+            <span style={{ paddingLeft: 10, paddingRight: 10 }}>
+              <Button color='teal' onClick={this.mul}>
+                Calculate
+              </Button>
+            </span>
+            <span> <Input disabled placeholder='result' value={this.state.numMul} /> </span>
+          </div>
         </div>
       </div>
     );
