@@ -21,7 +21,14 @@ contract MathLibrary {
         string memory str1;
         string memory str2;
 
-        (str1, str2) = normalizeNumbers(_str1, _str2);
+        if (bytes(_str1)[0] == "-" && bytes(_str2)[0] == "-") {
+            str1 = substring(_str1, 1, lengthOfString(_str1));
+            str2 = substring(_str2, 1, lengthOfString(_str2));
+
+            (str1, str2) = normalizeNumbers(str1, str2);
+        } else {
+            (str1, str2) = normalizeNumbers(_str1, _str2);
+        }
 
         (wp1, dp1) = splitDecimalStringToIntegers(str1);
         (wp2, dp2) = splitDecimalStringToIntegers(str2);
@@ -34,17 +41,32 @@ contract MathLibrary {
             wp = wp1 + wp2;
         }
 
-        _str = string(
-            abi.encodePacked(
-                uintToString(wp),
-                ".",
-                substring(
-                    string(bytes(uintToString(dp))),
-                    2,
-                    bytes(uintToString(dp)).length
+        if (bytes(_str1)[0] == "-" && bytes(_str2)[0] == "-") {
+            _str = string(
+                abi.encodePacked(
+                    "-",
+                    uintToString(wp),
+                    ".",
+                    substring(
+                        string(bytes(uintToString(dp))),
+                        2,
+                        bytes(uintToString(dp)).length
+                    )
                 )
-            )
-        );
+            );
+        } else {
+            _str = string(
+                abi.encodePacked(
+                    uintToString(wp),
+                    ".",
+                    substring(
+                        string(bytes(uintToString(dp))),
+                        2,
+                        bytes(uintToString(dp)).length
+                    )
+                )
+            );
+        }
 
         (dp, isUint) = strToUint(
             substring(

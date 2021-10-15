@@ -101,7 +101,12 @@ class App extends Component {
     }
     return (
       <div className="App">
+        <div className="name"><strong>Samuel Gwlanold Edoumou</strong></div>
         <h1>Calculator</h1>
+        <h4>
+          This calculator demonstrates how I managed to sum, substract and multiply
+          floating points numbers in solidity by using strings.
+        </h4>
 
         <div className="segment">
           <div>
@@ -138,6 +143,27 @@ class App extends Component {
             <span> <Input disabled placeholder='result' value={this.state.numMul} /> </span>
           </div>
         </div>
+
+        <div className="hr">
+          <hr></hr>
+        </div>
+
+        <div className="desc">
+          NB: <span className="warning"><strong>All input numbers must contain a comma separator</strong></span>.
+          <br></br>
+          <br></br>
+          The sum of two positive or two negative numbers must be calculated using the first row. Ex: 2.0 + 2.0 and -2.0 + (-3.0).
+          <br></br>
+          <br></br>
+          The second row allows to subract a floatting points number from anoter one. Ex: 2.0 - 1.0
+          <br></br>
+          <br></br>
+          For -2.0 + 1.0, use the second row and put 1.0 as the first input and 2.0 as the secons such tht to get 1.0 - 2.0.
+          <br></br>
+          <br></br>
+          The last row allows to multiply two floating points numbers. Ex: 2.5 × 1.5 ||| 2.5 × (-1.5) ||| (-2.5) × 1.5 ||| (-2.5) × (-1.5)
+        </div>
+
       </div>
     );
   }
