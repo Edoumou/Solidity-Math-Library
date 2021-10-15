@@ -186,7 +186,10 @@ contract MathLibrary {
             sign2 = "+";
         }
 
-        if (bytes(wpStr1)[0] == "0" || bytes(wpStr2)[0] == "0") {
+        if (
+            (bytes(wpStr1)[0] == "0" && bytes(dpStr1)[0] == "0") ||
+            (bytes(wpStr2)[0] == "0" && bytes(dpStr2)[0] == "0")
+        ) {
             wp = 0;
             dp = 0;
             _str = string(abi.encodePacked("0", ".", "0"));
