@@ -148,6 +148,94 @@ contract MathLibrary {
         }
     }
 
+    //=== Multiplication of two floating points. Input and output are all unsigned integers
+    function mulFloat(string memory _str1, string memory _str2)
+        public
+        pure
+        returns (
+            uint256 wp,
+            uint256 dp,
+            string memory _str
+        )
+    {
+        string memory wpStr1;
+        string memory dpStr1;
+        string memory wpStr2;
+        string memory dpStr2;
+        string memory sign1;
+        string memory sign2;
+
+        bool isUint;
+
+        (wpStr1, dpStr1) = splitstring(_str1);
+        (wpStr2, dpStr2) = splitstring(_str2);
+
+        if (bytes(wpStr1)[0] == "-") {
+            wpStr1 = substring(wpStr1, 1, lengthOfString(wpStr1));
+            sign1 = "-";
+            _str1 = substring(_str1, 1, lengthOfString(_str1));
+        } else {
+            sign1 = "+";
+        }
+
+        if (bytes(wpStr2)[0] == "-") {
+            wpStr2 = substring(wpStr2, 1, lengthOfString(wpStr2));
+            sign2 = "-";
+            _str2 = substring(_str2, 1, lengthOfString(_str2));
+        } else {
+            sign2 = "+";
+        }
+
+        if (bytes(wpStr1)[0] == "0" || bytes(wpStr2)[0] == "0") {
+            wp = 0;
+            dp = 0;
+            _str = string(abi.encodePacked("0", ".", "0"));
+        } else {
+            (wp, isUint) = removeDot(_str1); // if _str1 = "3.14" => wp = 314
+            (dp, isUint) = removeDot(_str2); // if _str2 = "3.14" => dp = 314
+
+            _str = uintToString(wp * dp);
+
+            (wp, isUint) = strToUint(
+                substring(
+                    _str,
+                    0,
+                    lengthOfString(_str) -
+                        (lengthOfString(dpStr1) + lengthOfString(dpStr2))
+                )
+            );
+            (dp, isUint) = strToUint(
+                substring(
+                    _str,
+                    lengthOfString(_str) -
+                        (lengthOfString(dpStr1) + lengthOfString(dpStr2)),
+                    lengthOfString(_str)
+                )
+            );
+
+            if (
+                (bytes(sign1)[0] == "+" && bytes(sign2)[0] == "+") ||
+                (bytes(sign1)[0] == "-" && bytes(sign2)[0] == "-")
+            ) {
+                _str = string(
+                    abi.encodePacked(uintToString(wp), ".", uintToString(dp))
+                );
+            } else if (
+                (bytes(sign1)[0] == "+" && bytes(sign2)[0] == "-") ||
+                (bytes(sign1)[0] == "-" && bytes(sign2)[0] == "+")
+            ) {
+                _str = string(
+                    abi.encodePacked(
+                        "-",
+                        uintToString(wp),
+                        ".",
+                        uintToString(dp)
+                    )
+                );
+            }
+        }
+    }
+
     //=== Find the length of an unsigned integer
     function lengthOfUint(uint256 _num) private pure returns (uint256 length) {
         while (_num != 0) {
