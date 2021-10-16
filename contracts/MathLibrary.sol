@@ -187,8 +187,6 @@ contract MathLibrary {
         string memory sign1;
         string memory sign2;
 
-        bool isUint;
-
         (wpStr1, dpStr1) = splitstring(_str1);
         (wpStr2, dpStr2) = splitstring(_str2);
 
@@ -209,19 +207,28 @@ contract MathLibrary {
         }
 
         if (
-            (bytes(wpStr1)[0] == "0" && bytes(dpStr1)[0] == "0") ||
-            (bytes(wpStr2)[0] == "0" && bytes(dpStr2)[0] == "0")
+            (strToUintV2(wpStr1) == 0 && strToUintV2(dpStr1) == 0) ||
+            (strToUintV2(wpStr2) == 0 && strToUintV2(dpStr2) == 0)
         ) {
             wp = 0;
             dp = 0;
             _str = string(abi.encodePacked("0", ".", "0"));
         } else {
-            (wp, isUint) = removeDot(_str1); // if _str1 = "3.14" => wp = 314
-            (dp, isUint) = removeDot(_str2); // if _str2 = "3.14" => dp = 314
+            wp = removeDot(_str1); // if _str1 = "3.14" => wp = 314 and _str1 = 0.01 => wp = 1
+            dp = removeDot(_str2); // if _str2 = "3.14" => dp = 314 and _str2 = 0.10 => dp = 10
 
             _str = uintToString(wp * dp);
 
-            (wp, isUint) = strToUint(
+            wp = (lengthOfString(_str1) - 1) - lengthOfUint(wp); // returns the number of zeros lost in wp => _str1
+            dp = (lengthOfString(_str2) - 1) - lengthOfUint(dp); // returns the number of zeros lost in dp => _str2
+
+            if ((wp + dp) != 0) {
+                for (uint256 i = 0; i < (wp + dp); i++) {
+                    _str = string(abi.encodePacked("0", _str));
+                }
+            }
+
+            wp = strToUintV2(
                 substring(
                     _str,
                     0,
@@ -229,7 +236,7 @@ contract MathLibrary {
                         (lengthOfString(dpStr1) + lengthOfString(dpStr2))
                 )
             );
-            (dp, isUint) = strToUint(
+            dp = strToUintV2(
                 substring(
                     _str,
                     lengthOfString(_str) -
@@ -242,19 +249,49 @@ contract MathLibrary {
                 (bytes(sign1)[0] == "+" && bytes(sign2)[0] == "+") ||
                 (bytes(sign1)[0] == "-" && bytes(sign2)[0] == "-")
             ) {
+                //_str = string(abi.encodePacked(uintToString(wp), ".", uintToString(dp)));
                 _str = string(
-                    abi.encodePacked(uintToString(wp), ".", uintToString(dp))
+                    abi.encodePacked(
+                        substring(
+                            _str,
+                            0,
+                            lengthOfString(_str) -
+                                (lengthOfString(dpStr1) +
+                                    lengthOfString(dpStr2))
+                        ),
+                        ".",
+                        substring(
+                            _str,
+                            lengthOfString(_str) -
+                                (lengthOfString(dpStr1) +
+                                    lengthOfString(dpStr2)),
+                            lengthOfString(_str)
+                        )
+                    )
                 );
             } else if (
                 (bytes(sign1)[0] == "+" && bytes(sign2)[0] == "-") ||
                 (bytes(sign1)[0] == "-" && bytes(sign2)[0] == "+")
             ) {
+                //_str = string(abi.encodePacked("-", uintToString(wp), ".", uintToString(dp)));
                 _str = string(
                     abi.encodePacked(
                         "-",
-                        uintToString(wp),
+                        substring(
+                            _str,
+                            0,
+                            lengthOfString(_str) -
+                                (lengthOfString(dpStr1) +
+                                    lengthOfString(dpStr2))
+                        ),
                         ".",
-                        uintToString(dp)
+                        substring(
+                            _str,
+                            lengthOfString(_str) -
+                                (lengthOfString(dpStr1) +
+                                    lengthOfString(dpStr2)),
+                            lengthOfString(_str)
+                        )
                     )
                 );
             }
@@ -352,6 +389,23 @@ contract MathLibrary {
         }
 
         return (res, true);
+    }
+
+    //=== Convert a string to a uint without error handling
+    function strToUintV2(string memory _str) public pure returns (uint256 res) {
+        for (uint256 i = 0; i < bytes(_str).length; i++) {
+            if (
+                (uint8(bytes(_str)[i]) - 48) < 0 ||
+                (uint8(bytes(_str)[i]) - 48) > 9
+            ) {
+                return 0;
+            }
+            res +=
+                (uint8(bytes(_str)[i]) - 48) *
+                10**(bytes(_str).length - i - 1);
+        }
+
+        return res;
     }
 
     function splitDecimalStringToIntegers(string memory _str)
@@ -525,13 +579,13 @@ contract MathLibrary {
     }
 
     //=== Removing the dot "." of a floating point number. Ex: "12.45 => 1245"
-    function removeDot(string memory _str) public pure returns (uint256, bool) {
+    function removeDot(string memory _str) public pure returns (uint256) {
         string memory wp;
         string memory dp;
 
         (wp, dp) = splitstring(_str);
 
-        return strToUint(string(abi.encodePacked(wp, dp)));
+        return strToUintV2(string(abi.encodePacked(wp, dp)));
     }
 
     //=== Removing the dot "." of two floating point numbers and normalizing. Ex: "(3.14, 14.3) => (314, 1430)"
