@@ -105,7 +105,7 @@ class App extends Component {
         <h1>Calculator</h1>
         <h4>
           This calculator demonstrates how I managed to sum, substract and multiply
-          floating point numbers in solidity by using strings.
+          floating point numbers in solidity by using strings and unsigned integers.
         </h4>
 
         <div className="segment">
@@ -151,7 +151,7 @@ class App extends Component {
         <div className="desc">
           NB:
           <span className="warning">
-            <strong> All input numbers must contain a comma separator. Input and output floatting point numbers are all strings.
+            <strong> All input numbers must contain a comma separator. Input and output floatting point numbers are all strings
 
             </strong>
           </span>.
