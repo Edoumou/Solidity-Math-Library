@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/Solidity-Math-Library/static/css/main.f504036c.chunk.css",
+    "main.js": "/Solidity-Math-Library/static/js/main.35c95904.chunk.js",
+    "main.js.map": "/Solidity-Math-Library/static/js/main.35c95904.chunk.js.map",
+    "runtime-main.js": "/Solidity-Math-Library/static/js/runtime-main.15baa056.js",
+    "runtime-main.js.map": "/Solidity-Math-Library/static/js/runtime-main.15baa056.js.map",
+    "static/css/2.a5693907.chunk.css": "/Solidity-Math-Library/static/css/2.a5693907.chunk.css",
+    "static/js/2.d549b1e3.chunk.js": "/Solidity-Math-Library/static/js/2.d549b1e3.chunk.js",
+    "static/js/2.d549b1e3.chunk.js.map": "/Solidity-Math-Library/static/js/2.d549b1e3.chunk.js.map",
+    "index.html": "/Solidity-Math-Library/index.html",
+    "precache-manifest.364e82ba92a0539217b3b49807a4168e.js": "/Solidity-Math-Library/precache-manifest.364e82ba92a0539217b3b49807a4168e.js",
+    "service-worker.js": "/Solidity-Math-Library/service-worker.js",
+    "static/css/2.a5693907.chunk.css.map": "/Solidity-Math-Library/static/css/2.a5693907.chunk.css.map",
+    "static/css/main.f504036c.chunk.css.map": "/Solidity-Math-Library/static/css/main.f504036c.chunk.css.map",
+    "static/media/semantic.min.css": "/Solidity-Math-Library/static/media/outline-icons.ef60a4f6.woff"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.15baa056.js",
+    "static/css/2.a5693907.chunk.css",
+    "static/js/2.d549b1e3.chunk.js",
+    "static/css/main.f504036c.chunk.css",
+    "static/js/main.35c95904.chunk.js"
+  ]
+}
