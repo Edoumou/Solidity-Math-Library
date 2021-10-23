@@ -61,20 +61,19 @@ class App extends Component {
     let res;
     let num;
 
-    res = await contract.methods.subFloat(num1, num2).call({ account: account });
+    res = await contract.methods.subFloat(num1, num2).call({ from: account });
 
     //wp = res[0];
     //dp = res[1];
     num = res[2];
 
     console.log(`${num1} - ${num2} = ${num}`);
-
   };
 
   add = async () => {
     const { num1, num2, account, contract } = this.state;
 
-    let res = await contract.methods.addFloat(num1, num2).call({ account: account });
+    let res = await contract.methods.addFloat(num1, num2).call({ from: account });
 
     this.setState({ numPlus: res[2] });
   }
@@ -82,7 +81,7 @@ class App extends Component {
   sub = async () => {
     const { num3, num4, account, contract } = this.state;
 
-    let res = await contract.methods.subFloat(num3, num4).call({ account: account });
+    let res = await contract.methods.subFloat(num3, num4).call({ from: account });
 
     this.setState({ numMinus: res[2] });
   }
@@ -90,7 +89,7 @@ class App extends Component {
   mul = async () => {
     const { num5, num6, account, contract } = this.state;
 
-    let res = await contract.methods.mulFloat(num5, num6).call({ account: account });
+    let res = await contract.methods.mulFloat(num5, num6).call({ from: account });
 
     this.setState({ numMul: res[2] });
   }
